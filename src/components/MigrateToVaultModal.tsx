@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import {
   Dialog,
@@ -26,7 +27,7 @@ import { cn } from '@/lib/utils';
 
 interface Strategy {
   id: string;
-  name: string;
+  name?: string;
   tokenPair: string;
   network: string;
   priceRange: {
@@ -34,6 +35,48 @@ interface Strategy {
     max: string;
   };
   liquidity: string;
+  position?: {
+    pool: string;
+    status: string;
+    initialLiquidity: string;
+  };
+  performance?: {
+    totalValue: string;
+    profitLoss: string;
+    percentChange: string;
+    isProfit: boolean;
+  };
+  fees?: {
+    unclaimed: string;
+    generated: string;
+  };
+  age?: string;
+  owner?: string;
+  currentRange?: {
+    min: string;
+    max: string;
+    unit: string;
+  };
+  nextRanges?: {
+    lower: {
+      min: string;
+      max: string;
+      unit: string;
+    };
+    upper: {
+      min: string;
+      max: string;
+      unit: string;
+    };
+  };
+  rebalancingTriggers?: {
+    lower: string;
+    upper: string;
+  };
+  currentPrice?: {
+    value: string;
+    unit: string;
+  };
 }
 
 interface MigrateToVaultModalProps {
@@ -115,7 +158,7 @@ const MigrateToVaultModal: React.FC<MigrateToVaultModalProps> = ({
       case 0:
         return (
           <div className="space-y-6 py-4">
-            <div className="flex items-center gap-4 p-4 rounded-md bg-krystal-light/10">
+            <div className="flex items-center gap-4 p-4 rounded-md bg-black/40 border border-gray-800">
               <div className="flex items-center -space-x-2">
                 <TokenIcon symbol={tokens[0]} size="md" />
                 <TokenIcon symbol={tokens[1]} size="md" className="border-2 border-background" />
@@ -140,7 +183,7 @@ const MigrateToVaultModal: React.FC<MigrateToVaultModalProps> = ({
               <div>
                 <Label htmlFor="zapOut">Zap Out Token</Label>
                 <Select defaultValue={tokens[0]}>
-                  <SelectTrigger className="w-full mt-2 bg-krystal-medium border-krystal-light">
+                  <SelectTrigger className="w-full mt-2 bg-black border-gray-700">
                     <SelectValue placeholder="Select token" />
                   </SelectTrigger>
                   <SelectContent>
@@ -159,12 +202,12 @@ const MigrateToVaultModal: React.FC<MigrateToVaultModalProps> = ({
       case 1:
         return (
           <div className="space-y-6 py-4">
-            <div className="flex items-center gap-3 p-4 rounded-md bg-krystal-success/10 border border-krystal-success/30">
-              <div className="bg-krystal-success/20 p-2 rounded-full">
+            <div className="flex items-center gap-3 p-4 rounded-md bg-green-950/30 border border-green-900/50">
+              <div className="bg-green-900/20 p-2 rounded-full">
                 <TokenIcon symbol={principalToken} size="sm" />
               </div>
               <div>
-                <div className="text-krystal-success font-medium">Successfully Withdrawn</div>
+                <div className="text-green-400 font-medium">Successfully Withdrawn</div>
                 <div className="text-sm text-muted-foreground">
                   {withdrawnAmount} {principalToken} available for deposit
                 </div>
@@ -178,14 +221,14 @@ const MigrateToVaultModal: React.FC<MigrateToVaultModalProps> = ({
                   id="vaultName"
                   value={vaultName}
                   onChange={(e) => setVaultName(e.target.value)}
-                  className="mt-2 bg-krystal-medium border-krystal-light"
+                  className="mt-2 bg-black border-gray-700"
                 />
               </div>
               
               <div>
                 <Label htmlFor="network">Network</Label>
                 <Select defaultValue={strategy.network} disabled>
-                  <SelectTrigger className="w-full mt-2 bg-krystal-medium border-krystal-light">
+                  <SelectTrigger className="w-full mt-2 bg-black border-gray-700">
                     <SelectValue placeholder="Select network" />
                   </SelectTrigger>
                   <SelectContent>
@@ -200,7 +243,7 @@ const MigrateToVaultModal: React.FC<MigrateToVaultModalProps> = ({
               <div>
                 <Label htmlFor="principalToken">Principal Token</Label>
                 <Select defaultValue={principalToken} onValueChange={setPrincipalToken}>
-                  <SelectTrigger className="w-full mt-2 bg-krystal-medium border-krystal-light">
+                  <SelectTrigger className="w-full mt-2 bg-black border-gray-700">
                     <SelectValue placeholder="Select token" />
                   </SelectTrigger>
                   <SelectContent>
@@ -243,8 +286,8 @@ const MigrateToVaultModal: React.FC<MigrateToVaultModalProps> = ({
       case 2:
         return (
           <div className="space-y-6 py-4">
-            <div className="bg-krystal-primary/10 border border-krystal-primary/30 rounded-md p-4">
-              <p className="text-krystal-primary font-medium">Vault Created Successfully</p>
+            <div className="bg-violet-500/10 border border-violet-500/30 rounded-md p-4">
+              <p className="text-violet-400 font-medium">Vault Created Successfully</p>
               <p className="text-sm text-muted-foreground mt-1">
                 Your vault has been created and is ready to receive strategies.
               </p>
@@ -253,7 +296,7 @@ const MigrateToVaultModal: React.FC<MigrateToVaultModalProps> = ({
             <div className="space-y-4">
               <Label>Migrating Strategy Configuration</Label>
               <div className="grid gap-4">
-                <div className="p-4 rounded-md bg-krystal-medium border border-krystal-light/30">
+                <div className="p-4 rounded-md bg-black/60 border border-gray-800">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-3">
                       <div className="flex items-center -space-x-2">
@@ -262,7 +305,7 @@ const MigrateToVaultModal: React.FC<MigrateToVaultModalProps> = ({
                       </div>
                       <div className="font-medium">{strategy.tokenPair}</div>
                     </div>
-                    <Badge className="bg-krystal-primary/20 text-krystal-primary border-krystal-primary/30">
+                    <Badge className="bg-violet-500/20 text-violet-400 border-violet-500/30">
                       Pool & Range
                     </Badge>
                   </div>
@@ -277,10 +320,10 @@ const MigrateToVaultModal: React.FC<MigrateToVaultModalProps> = ({
                   </div>
                 </div>
                 
-                <div className="p-4 rounded-md bg-krystal-medium border border-krystal-light/30">
+                <div className="p-4 rounded-md bg-black/60 border border-gray-800">
                   <div className="flex items-center justify-between mb-3">
                     <div className="font-medium">Automation Settings</div>
-                    <Badge className="bg-krystal-primary/20 text-krystal-primary border-krystal-primary/30">
+                    <Badge className="bg-violet-500/20 text-violet-400 border-violet-500/30">
                       Rules
                     </Badge>
                   </div>
@@ -313,7 +356,7 @@ const MigrateToVaultModal: React.FC<MigrateToVaultModalProps> = ({
           <Button 
             onClick={handleWithdraw} 
             disabled={isLoading}
-            className="w-full md:w-auto bg-gradient-to-r from-krystal-primary to-krystal-accent hover:brightness-110"
+            className="w-full md:w-auto bg-gradient-to-r from-violet-500 to-blue-500 hover:brightness-110 border-none"
           >
             {isLoading ? (
               <>
@@ -332,14 +375,14 @@ const MigrateToVaultModal: React.FC<MigrateToVaultModalProps> = ({
               variant="outline" 
               onClick={() => setCurrentStep(0)}
               disabled={isLoading}
-              className="border-krystal-light hover:bg-krystal-light/20"
+              className="border-gray-700 hover:bg-black/40"
             >
               Back
             </Button>
             <Button 
               onClick={handleCreateVault}
               disabled={isLoading || !vaultName}
-              className="bg-gradient-to-r from-krystal-primary to-krystal-accent hover:brightness-110"
+              className="bg-gradient-to-r from-violet-500 to-blue-500 hover:brightness-110 border-none"
             >
               {isLoading ? (
                 <>
@@ -359,14 +402,14 @@ const MigrateToVaultModal: React.FC<MigrateToVaultModalProps> = ({
               variant="outline" 
               onClick={() => setCurrentStep(1)}
               disabled={isLoading}
-              className="border-krystal-light hover:bg-krystal-light/20"
+              className="border-gray-700 hover:bg-black/40"
             >
               Back
             </Button>
             <Button 
               onClick={handleMigrateSettings}
               disabled={isLoading}
-              className="bg-gradient-to-r from-krystal-primary to-krystal-accent hover:brightness-110"
+              className="bg-gradient-to-r from-violet-500 to-blue-500 hover:brightness-110 border-none"
             >
               {isLoading ? (
                 <>
@@ -387,12 +430,12 @@ const MigrateToVaultModal: React.FC<MigrateToVaultModalProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className={cn(
-        "bg-krystal-medium border-krystal-light/50 text-white shadow-xl",
+        "bg-black border-gray-800 text-white shadow-xl",
         "sm:max-w-md md:max-w-lg"
       )}>
         <DialogHeader>
-          <DialogTitle className="text-xl gradient-text">Migrate to Vault</DialogTitle>
-          <DialogDescription className="text-muted-foreground">
+          <DialogTitle className="text-xl text-white">Migrate to Vault</DialogTitle>
+          <DialogDescription className="text-gray-400">
             Convert your strategy into a vault with improved management capabilities.
           </DialogDescription>
         </DialogHeader>

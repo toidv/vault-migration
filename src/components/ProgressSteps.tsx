@@ -24,10 +24,10 @@ const ProgressSteps: React.FC<ProgressStepsProps> = ({
                 className={cn(
                   'w-10 h-10 flex items-center justify-center rounded-full border-2 transition-all duration-300',
                   index < currentStep 
-                    ? 'bg-krystal-success border-krystal-success' 
+                    ? 'bg-violet-500 border-violet-500' 
                     : index === currentStep 
-                      ? 'border-krystal-primary bg-krystal-primary/20' 
-                      : 'border-krystal-light bg-krystal-medium'
+                      ? 'border-violet-500 bg-violet-500/20' 
+                      : 'border-gray-700 bg-black'
                 )}
               >
                 {index < currentStep ? (
@@ -35,7 +35,7 @@ const ProgressSteps: React.FC<ProgressStepsProps> = ({
                 ) : (
                   <span className={cn(
                     'text-sm font-medium',
-                    index === currentStep ? 'text-krystal-primary' : 'text-krystal-light'
+                    index === currentStep ? 'text-violet-400' : 'text-gray-400'
                   )}>
                     {index + 1}
                   </span>
@@ -45,10 +45,10 @@ const ProgressSteps: React.FC<ProgressStepsProps> = ({
                 className={cn(
                   'text-xs mt-2 font-medium',
                   index < currentStep 
-                    ? 'text-krystal-success' 
+                    ? 'text-violet-400' 
                     : index === currentStep 
-                      ? 'text-krystal-primary' 
-                      : 'text-krystal-light'
+                      ? 'text-violet-400' 
+                      : 'text-gray-400'
                 )}
               >
                 {step}
@@ -60,8 +60,8 @@ const ProgressSteps: React.FC<ProgressStepsProps> = ({
                 className={cn(
                   'h-0.5 flex-1 mx-2',
                   index < currentStep 
-                    ? 'bg-krystal-success' 
-                    : 'bg-krystal-light'
+                    ? 'bg-violet-500' 
+                    : 'bg-gray-700'
                 )}
               />
             )}
