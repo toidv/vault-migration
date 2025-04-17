@@ -35,6 +35,11 @@ interface Strategy {
     max: string;
   };
   liquidity: string;
+  hasActiveLiquidity?: boolean;
+  currentPrice: {
+    value: string;
+    unit: string;
+  };
   position?: {
     pool: string;
     status: string;
@@ -73,7 +78,7 @@ interface Strategy {
     lower: string;
     upper: string;
   };
-  currentPrice?: {
+  price?: {
     value: string;
     unit: string;
   };

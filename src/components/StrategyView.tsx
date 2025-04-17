@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   Card,
@@ -28,7 +27,10 @@ const mockStrategy = {
   apy: '24.5%',
   liquidity: '32.45',
   hasActiveLiquidity: true,
-  currentPrice: '1989',
+  currentPrice: {
+    value: '1989', 
+    unit: 'USD'
+  },
   position: {
     pool: 'SushiSwap V3 #1370',
     status: 'in range',
@@ -76,6 +78,15 @@ const mockStrategy = {
 const StrategyView: React.FC = () => {
   const { toast } = useToast();
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+  // Calculate USD value for current liquidity
+  const calculateLiquidityInUsd = () => {
+    const liquidityAmount = parseFloat(mockStrategy.liquidity);
+    const tokenPrice = parseFloat(mockStrategy.currentPrice.value);
+    return (liquidityAmount * tokenPrice).toFixed(2);
+  };
+
+  const liquidityInUsd = calculateLiquidityInUsd();
 
   const handleMigrateClick = () => {
     setIsModalOpen(true);
@@ -153,7 +164,10 @@ const StrategyView: React.FC = () => {
           <div className="grid grid-cols-5 gap-4 p-4">
             <div>
               <div className="text-xs text-gray-400">Current liquidity</div>
-              <div className="font-medium">${mockStrategy.fees.unclaimed}</div>
+              <div className="font-medium flex items-center">
+                <span>{mockStrategy.liquidity} {mockStrategy.tokenPair.split('/')[0]}</span>
+                <span className="ml-1 text-xs text-blue-400">(~${liquidityInUsd})</span>
+              </div>
             </div>
             <div>
               <div className="text-xs text-gray-400">Unclaimed fees</div>
