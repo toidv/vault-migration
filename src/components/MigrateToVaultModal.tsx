@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   Dialog,
@@ -100,7 +99,6 @@ const MigrateToVaultModal: React.FC<MigrateToVaultModalProps> = ({
   const [currentStep, setCurrentStep] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   
-  // Form state
   const [withdrawnAmount, setWithdrawnAmount] = useState('0.0');
   const [vaultName, setVaultName] = useState(`MigratedVault - ${strategy.tokenPair.split('/')[0]}`);
   const [principalToken, setPrincipalToken] = useState(strategy.tokenPair.split('/')[0]);
@@ -108,10 +106,16 @@ const MigrateToVaultModal: React.FC<MigrateToVaultModalProps> = ({
   
   const steps = ["Withdraw", "Create Vault", "Migrate Settings"];
   
-  // Simulate withdrawal process
+  const calculateLiquidityInUsd = () => {
+    const liquidityAmount = parseFloat(strategy.liquidity);
+    const tokenPrice = parseFloat(strategy.currentPrice.value);
+    return (liquidityAmount * tokenPrice).toFixed(2);
+  };
+  
+  const liquidityInUsd = calculateLiquidityInUsd();
+  
   const handleWithdraw = () => {
     setIsLoading(true);
-    // Simulate API call
     setTimeout(() => {
       setWithdrawnAmount(strategy.liquidity);
       setIsLoading(false);
@@ -119,29 +123,24 @@ const MigrateToVaultModal: React.FC<MigrateToVaultModalProps> = ({
     }, 2000);
   };
   
-  // Simulate vault creation
   const handleCreateVault = () => {
     if (!vaultName) return;
     
     setIsLoading(true);
-    // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
       setCurrentStep(2);
     }, 2000);
   };
   
-  // Simulate migration completion
   const handleMigrateSettings = () => {
     setIsLoading(true);
-    // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
       onMigrationComplete(vaultName);
     }, 2000);
   };
   
-  // Reset state when modal closes
   React.useEffect(() => {
     if (!isOpen) {
       setTimeout(() => {
@@ -154,10 +153,8 @@ const MigrateToVaultModal: React.FC<MigrateToVaultModalProps> = ({
     }
   }, [isOpen, strategy]);
   
-  // Get tokens from token pair
   const tokens = strategy.tokenPair.split('/');
   
-  // Render step content based on current step
   const renderStepContent = () => {
     switch (currentStep) {
       case 0:
@@ -171,7 +168,8 @@ const MigrateToVaultModal: React.FC<MigrateToVaultModalProps> = ({
               <div>
                 <div className="font-medium">{strategy.tokenPair} Position</div>
                 <div className="text-sm text-muted-foreground">
-                  Current Liquidity: {strategy.liquidity} {tokens[0]}
+                  Current Liquidity: {strategy.liquidity} {tokens[0]} 
+                  <span className="ml-1 text-blue-400">(~${liquidityInUsd})</span>
                 </div>
               </div>
             </div>
@@ -214,7 +212,8 @@ const MigrateToVaultModal: React.FC<MigrateToVaultModalProps> = ({
               <div>
                 <div className="text-green-400 font-medium">Successfully Withdrawn</div>
                 <div className="text-sm text-muted-foreground">
-                  {withdrawnAmount} {principalToken} available for deposit
+                  {withdrawnAmount} {principalToken} 
+                  <span className="ml-1 text-blue-400">(~${liquidityInUsd})</span> available for deposit
                 </div>
               </div>
             </div>
@@ -266,7 +265,8 @@ const MigrateToVaultModal: React.FC<MigrateToVaultModalProps> = ({
                 <div className="space-y-0.5">
                   <Label htmlFor="autoDeposit">Auto-deposit withdrawn token</Label>
                   <p className="text-xs text-muted-foreground">
-                    Automatically deposit {withdrawnAmount} {principalToken} into the new vault
+                    Automatically deposit {withdrawnAmount} {principalToken} 
+                    <span className="ml-1 text-blue-400">(~${liquidityInUsd})</span> into the new vault
                   </p>
                 </div>
                 <Switch 
@@ -353,7 +353,6 @@ const MigrateToVaultModal: React.FC<MigrateToVaultModalProps> = ({
     }
   };
   
-  // Render footer actions based on current step
   const renderFooterActions = () => {
     switch (currentStep) {
       case 0:
