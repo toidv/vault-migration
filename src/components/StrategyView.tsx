@@ -67,7 +67,7 @@ const mockStrategy = {
     lower: '0.1395 USDC/WPOL',
     upper: '0.194 USDC/WPOL',
   },
-  currentPrice: {
+  price: {
     value: '0.1809',
     unit: 'USDC/WPOL',
   },
